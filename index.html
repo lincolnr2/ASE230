@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+            tr, th, td{
+        border: 2px solid black;
+        padding: 5px;
+        
+    }
+    table{
+        border-collapse: collapse;
+    }
+    </style>
+
+</head>
+<body>
+    <div style="height: 200px; background-color: lightblue; outline: 10px; outline-color: black;" >
+        <center>
+            <h1>ASE 230 API example</h1>
+        </center>
+    </div>
+    <br><br><br>
+    <center>
+        <div style="width: 30%; background-color: lightgray; padding: 25px; border-radius: 10px;">
+            <form id="getform" method = "GET"> 
+                <p>Enter ID number: <input type="number" name = 'pid' id="pid"></p>
+                <input type="submit" name="submit" id="">
+            </form>
+
+            <form id="postform" method="post">
+                Enter Product Name<input required type="text" name="name" id="name"><br>
+                Enter Product Price <input required type="number" name="price" id="price"> <br>
+                Enter Product Stock <input required type="number" name="stock" id="stock"> <br>
+                <input type="submit" name="submit" id="submit"> <br>
+            </form>
+
+            <p id='result'></p>
+            <table id="resulttable" style="visibility: hidden; border: 2px;"></table>
+        </div>
+        <script>
+           
+            document.getElementById("getform").addEventListener("submit", 
+                async function(event){ 
+                    event.preventDefault();
+                    document.getElementById('resulttable').innerHTML = '';
+                        try {
+                        const input = document.getElementById('pid')
+                    const response = await fetch(`/products/${input.value}`, {
+                    method: 'GET'
+                    });
+                    console.log(response.ok);
+                    const data = await response.json();
+                    console.log(data);
+                    for(i = 1; i<data.length; i++){
+                        const tr = document.createElement('tr');
+                        for(j = 0; j<data[i].length;j++){
+                            const td = document.createElement('td');
+                            td.textContent = data[i][j];
+                            tr.appendChild(td)
+                        }
+                        document.getElementById('resulttable').appendChild(tr);
+                    }
+                    document.getElementById('result').textContent = data[0]
+                    document.getElementById('resulttable').style.visibility = 'visible';
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+
+            document.getElementById("postform").addEventListener("submit", 
+            async function(event){ 
+                event.preventDefault();
+                try {
+                const postData = {
+                    name: document.getElementById('name').value,
+                    price: document.getElementById('price').value,
+                    stock: document.getElementById('stock').value
+                }
+                const response = await fetch('/products', {
+                method: 'POST',
+                body: JSON.stringify(postData)
+                });
+                console.log(response.ok);
+                const data = await response.json();
+               
+                document.getElementById('result').textContent = data.message;
+            }catch (error) {
+                console.error('Error:', error);}
+        });
+
+        </script>
+    </center>
+  
+</body>
+</html>
