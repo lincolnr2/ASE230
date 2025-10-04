@@ -77,7 +77,7 @@ switch($resource){
       create_product($pdo, $name, $price, $stock);
       break;
     case 'PUT':                                         //PUT products (not implemented)
-      if($product_id){update_product($pdo, $id);}
+      if($id){update_product($pdo, $id);}
       else{
         http_response_code(400);
         echo  json_encode(["product ID required"]
@@ -85,7 +85,7 @@ switch($resource){
       }
       break;
     case 'DELETE':                                       //DELETE products
-      if($product_id){delete_product($pdo, $id);}
+      if($id){delete_product($pdo, $id);}
       else{
         http_response_code(400);
         echo json_encode(["product ID required"]

@@ -35,12 +35,13 @@ function get_product($pdo, $id){
   if($row != null){
   $data = ["Found ", ['ID','Name', 'Price','Stock']];
   $data[] = ["{$row['id']}", "{$row['name']}", "{$row['price']}", "{$row['stock']}"];
+  http_response_code(200);
   }
   else{
     $data = ["Unable to find product"];
+    http_response_code(404);
   }
   echo json_encode($data, JSON_PRETTY_PRINT);
-  http_response_code(200);
 }
   
   catch(PDOException $e){
@@ -55,20 +56,23 @@ function create_product($pdo, $name, $price, $stock){
  $success = $stmt->execute([':name' => $name, ':price' => $price, ':stock' => $stock]);
  if($success){
   echo json_encode(['message' => 'Added successfully']);
-  http_response_code(200);
+  http_response_code(201);
  }
  else{
   echo json_encode(['message' => 'unable to add product']);
+  http_response_code(400);
  }
 }
 
 //Changes a products info based on its ID
 function update_product($pdo, $id){
+  http_response_code(501);
   return;
 }
 
 //Deletes a product based on its ID
 function delete_product($pdo, $id){
+  http_response_code(501);
   return;
 }
 
