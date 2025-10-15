@@ -22,55 +22,183 @@
             <h1>ASE 230 API example</h1>
         </center>
     </div>
-    <br><br><br>
+    <br>
     <center>
-        <div style="width: 30%; background-color: lightgray; padding: 25px; border-radius: 10px;">
-            <form id="getform" method = "GET"> 
-                <p>Enter ID number: <input type="number" name = 'pid' id="pid"></p>
-                <input type="submit" name="submit" id="">
-            </form>
 
-            <form id="postform" method="post">
+    <div style="background-color: gray; border-radius: 15px; width: 35%;">
+        <h3>Log In</h3>
+        <p>user = admin, pass = admin</p>
+        <form method="post" id="loginform">
+            Username: <input type="text" name="username" id="username" required><br>
+            Password: <input type="password" name="userpass" id="userpass" required><br>
+            <input type="submit" name="submit" id="loginsubmit">
+        </form>
+        <p id="keyout"> </p>
+    </div>
+    <br><br>
+        <div style="width: 30%; background-color: lightgray; padding: 25px; border-radius: 10px;">
+            <form id="getProducts" method = "GET"> 
+                <p> Get products, ID for specific product </p>
+                <p>Enter ID number: <input type="number" name = 'pid' id="pid"></p>
+                <input type="submit" name="submit" id="sgetproducts">
+            </form><br>
+
+            <form id="deleteProducts" method="post">
+                <p>Delete products, Requires auth</p>
+                Product ID: <input type="number" name="delpid" id="delpid">
+                <input type="submit" name="" id="sdeleteproducts">
+            </form><br>
+
+            <form id="postProducts" method="post">
+                <p>Create product, ID is auto generated</p>
                 Enter Product Name<input required type="text" name="name" id="name"><br>
                 Enter Product Price <input required type="number" name="price" id="price"> <br>
                 Enter Product Stock <input required type="number" name="stock" id="stock"> <br>
-                <input type="submit" name="submit" id="submit"> <br>
-            </form>
+                <input type="submit" name="submit" id="spostProducts"> <br>
+            </form><br>
 
-            <p id='result'></p>
-            <table id="resulttable" style="visibility: hidden; border: 2px;"></table>
+            <form id="putProducts" method="post">
+                <p>update product, leave blank to keep current data</p>
+                Enter product ID <input type="number" name="" id="putpid">
+                Enter Product Name<input type="text" name="name" id="putname"><br>
+                Enter Product Price <input type="number" name="price" id="putprice"> <br>
+                Enter Product Stock <input type="number" name="stock" id="putstock"> <br>
+                <input type="submit" name="submit" id="sputProducts"> <br>
+            </form><br>
+
+            <p id='productresult'></p>
+            <table id="producttable" style="visibility: hidden; border: 2px;"></table>
         </div>
+        <br><br>
+
+        <div style="width: 30%; background-color: aqua; padding: 25px; border-radius: 10px;">
+
+            <form id="getManagers" method = "GET"> 
+                <p> Get managers, ID for specific manager </p>
+                <input type="number" name="mid" id="mid">
+                <input type="submit" name="submit" id="sgetmanagers">
+            </form><br>
+
+            <form id="deleteManagers" method="post">
+                <p>Delete managers, Requires auth</p>
+                Manager ID: <input type="number" name="delmid" id="delmid">
+                <input type="submit" name="" id="sdeletemanagers">
+            </form><br>
+
+            <form id="postManagers" method="post">
+                <p>Create manager, ID is auto generated, requires auth</p>
+                Enter Manager Name<input required type="text" name="name" id="mname"><br>
+                Enter Manager email <input required type="email" name="email" id="memail"> <br>
+                Enter Manager permissions <input required type="number" name="perm" id="mperm"> <br>
+                <input type="submit" name="submit" id="spostmanagers"> <br>
+            </form><br>
+
+            <form id="putManagers" method="post">
+                <p>update manager, leave blank to keep current data, requires auth</p>
+                Enter Manager ID <input type="number" name="" id="putmid">
+                Enter Manager Name<input type="text" name="name" id="putmname"><br>
+                Enter Manager Email <input type="email" name="email" id="putmemail"> <br>
+                Enter Manager Permissions <input type="number" name="perm" id="putmperm"> <br>
+                <input type="submit" name="submit" id="sputmanagers"> <br>
+            </form><br>
+            <p id="managerresult"></p>
+            <table id="managertable" style="visibility: hidden; border: 2px;"></table>
+        </div>
+
+        <div style="width: 30%; background-color: lightsalmon; padding: 25px; border-radius: 10px;">
+            <form id="getSales" method = "GET"> 
+                <p> Get sales, ID for specific sale </p>
+                <input type="number" name="sid" id="sid">
+                <input type="submit" name="submit" id="sgetsales">
+            </form><br>
+
+            <form id="deleteSales" method="post">
+                <p>Delete sales</p>
+                Sale ID: <input type="number" name="delsid" id="delsid">
+                <input type="submit" name="" id="sdeletesales">
+            </form><br>
+
+            <form id="postSales" method="post">
+                <p>Create sale, ID is auto generated</p>
+                Enter start date: <input required type="datetime-local" step="1" name="" id="startdate">
+                Enter end date: <input type="datetime-local" step="1" name="" id="enddate">
+                Enter discount amount: <input required type="number" name="" id="discount">
+                <input type="submit" name="" id="spostsales">
+            </form><br>
+
+            <p id='saleresult'></p>
+            <table id="saletable" style="visibility: hidden; border: 2px;"></table>
+        </div>
+
         <script>
-           
-            document.getElementById("getform").addEventListener("submit", 
-                async function(event){ 
-                    event.preventDefault();
-                    document.getElementById('resulttable').innerHTML = '';
-                        try {
-                        const input = document.getElementById('pid')
-                    const response = await fetch(`/products/${input.value}`, {
-                    method: 'GET'
-                    });
-                    console.log(response.ok);
-                    const data = await response.json();
-                    console.log(data);
-                    for(i = 1; i<data.length; i++){
-                        const tr = document.createElement('tr');
-                        for(j = 0; j<data[i].length;j++){
-                            const td = document.createElement('td');
-                            td.textContent = data[i][j];
-                            tr.appendChild(td)
-                        }
-                        document.getElementById('resulttable').appendChild(tr);
-                    }
-                    document.getElementById('result').textContent = data[0]
-                    document.getElementById('resulttable').style.visibility = 'visible';
-                } catch (error) {
-                    console.error('Error:', error);
+        let token = "";
+
+        document.getElementById('loginform').addEventListener('submit', async function(event){
+             event.preventDefault()
+             const logindata = {
+             uname: document.getElementById("username").value,
+             upass: document.getElementById("userpass").value};
+             const response = await fetch('/login', {
+                method: 'POST',
+                body: JSON.stringify(logindata)
+             });
+             const data = await response.json();
+             console.log(response.ok);
+             token = data['token'];
+             if(token != undefined){
+             document.getElementById('keyout').textContent = "Token: " + token;
+             }
+             else{
+                document.getElementById('keyout').textContent = "Incorrect username or password";
+             }
+        });
+
+        function dataToTable(data, endpoint){
+                let resulttable = Element;
+                let result = Element;
+                switch(endpoint){
+                    case 'products':
+                        resulttable = document.getElementById('producttable');
+                        result = document.getElementById('productresult');
+                    break;
+                    case 'managers':
+                        resulttable = document.getElementById('managertable');
+                        result = document.getElementById('managerresult');
+                    break;
+                    case 'sales':
+                        resulttable = document.getElementById('saletable');
+                        result = document.getElementById('saleresult');
+                    break;
+
                 }
+                resulttable.innerHTML = '';
+                console.log(data);
+                for(i = 1; i<data.length; i++){
+                    const tr = document.createElement('tr');
+                    for(j = 0; j<data[i].length;j++){
+                        const td = document.createElement('td');
+                        td.textContent = data[i][j];
+                        tr.appendChild(td)
+                    }
+                    resulttable.appendChild(tr);
+                }
+                result.textContent = data[0]
+                resulttable.style.visibility = 'visible';
+            }
+
+        document.getElementById("getProducts").addEventListener("submit", 
+            async function(event){ 
+                event.preventDefault();
+                    const input = document.getElementById('pid')
+                const response = await fetch(`/products/${input.value}`, {
+                method: 'GET'
+                });
+                console.log(response.ok);
+                const data = await response.json();
+                dataToTable(data, 'products')
             });
 
-            document.getElementById("postform").addEventListener("submit", 
+        document.getElementById("postProducts").addEventListener("submit", 
             async function(event){ 
                 event.preventDefault();
                 try {
@@ -86,10 +214,188 @@
                 console.log(response.ok);
                 const data = await response.json();
                
-                document.getElementById('result').textContent = data.message;
+                document.getElementById('productresult').textContent = data.message;
             }catch (error) {
                 console.error('Error:', error);}
         });
+
+        document.getElementById("putProducts").addEventListener("submit", 
+            async function(event){ 
+                event.preventDefault();
+                try {
+                    const id = document.getElementById('putpid').value;
+                const putdata = {
+                    name: document.getElementById('putname').value,
+                    price: document.getElementById('putprice').value,
+                    stock: document.getElementById('putstock').value
+                }
+                const response = await fetch(`/products/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(putdata)
+                });
+                console.log(response.ok);
+                const data = await response.json();
+               
+                document.getElementById('productresult').textContent = data.message;
+            }catch (error) {
+                console.error('Error:', error);}
+        });
+        
+        document.getElementById('deleteProducts').addEventListener('submit', async function(event){
+            event.preventDefault();
+            if(token == undefined){
+                document.getElementById('productresult').textContent = "Authorization required. Please sign in for token"
+            }
+            else{
+                const id = document.getElementById('delpid').value;
+                const deldata = {token: token};
+             const response = await fetch(`/products/${id}`, {
+                method: 'DELETE',
+                body: JSON.stringify(deldata)
+             });
+             const data = await response.json();
+             console.log(response.ok);
+             document.getElementById('productresult').textContent = data.message
+            }
+
+        });
+        
+        document.getElementById("getManagers").addEventListener("submit", 
+            async function(event){ 
+                event.preventDefault();
+                    const input = document.getElementById('mid')
+                const response = await fetch(`/managers/${input.value}`, {
+                method: 'GET'
+                });
+                console.log(response.ok);
+                const data = await response.json();
+                dataToTable(data, 'managers')
+            });
+
+        document.getElementById("postManagers").addEventListener("submit", 
+            async function(event){ 
+                event.preventDefault();
+                if(token == undefined){
+                document.getElementById('managerResult').textContent = "Authorization required. Please sign in for token"
+            }
+            else{
+                const postData = {
+                    name: document.getElementById('mname').value,
+                    email: document.getElementById('memail').value,
+                    permissions: document.getElementById('mperm').value,
+                    token: token
+                }
+                const response = await fetch('/managers', {
+                method: 'POST',
+                body: JSON.stringify(postData)
+                });
+                console.log(response.ok);
+                const data = await response.json();
+               
+                document.getElementById('managerresult').textContent = data.message;
+            }
+        });
+
+        document.getElementById("putManagers").addEventListener("submit", 
+            async function(event){ 
+                event.preventDefault();
+                if(token == undefined){
+                document.getElementById('managerResult').textContent = "Authorization required. Please sign in for token"
+            }
+            else{         
+                const id = document.getElementById('putmid').value;
+                const putdata = {
+                    name: document.getElementById('putmname').value,
+                    email: document.getElementById('putmemail').value,
+                    permissions: document.getElementById('putmperm').value,
+                    token: token
+                }
+                const response = await fetch(`/managers/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(putdata)
+                });
+                console.log(response.ok);
+                const data = await response.json();
+               
+                document.getElementById('managerresult').textContent = data.message;
+            }
+        });
+        
+        document.getElementById('deleteManagers').addEventListener('submit', async function(event){
+            event.preventDefault();
+            if(token == undefined){
+                document.getElementById('managerResult').textContent = "Authorization required. Please sign in for token"
+            }
+            else{
+                const id = document.getElementById('delmid').value;
+                const deldata = {
+             token: token};
+             const response = await fetch(`/managers/${id}`, {
+                method: 'DELETE',
+                body: JSON.stringify(deldata)
+             });
+             const data = await response.json();
+             console.log(response.ok);
+             document.getElementById('managerresult').textContent = data.message
+            }
+
+
+
+        });
+        
+        document.getElementById("getSales").addEventListener("submit", 
+            async function(event){ 
+                event.preventDefault();
+                    const input = document.getElementById('sid')
+                const response = await fetch(`/sales/${input.value}`, {
+                method: 'GET'
+                });
+                console.log(response.ok);
+                const data = await response.json();
+                dataToTable(data, 'sales')
+            });
+
+
+            document.getElementById('deleteSales').addEventListener('submit', async function(event){
+            event.preventDefault();
+            const id = document.getElementById('delsid').value;
+                const deldata = {
+                     token: token};
+             const response = await fetch(`/sales/${id}`, {
+                method: 'DELETE',
+                body: JSON.stringify(deldata)
+             });
+             const data = await response.json();
+             console.log(response.ok);
+             document.getElementById('saleresult').textContent = data.message
+
+        });
+          
+        document.getElementById("postSales").addEventListener("submit", 
+            async function(event){ 
+                event.preventDefault();
+                try {
+                const postData = {
+                    startdate: new Date(document.getElementById('startdate').value).toISOString(),
+                    enddate: new Date(document.getElementById('enddate').value).toISOString(),
+                    discount: document.getElementById('discount').value
+                }
+                const response = await fetch('/sales', {
+                method: 'POST',
+                body: JSON.stringify(postData)
+                });
+                console.log(response.ok);
+                const data = await response.json();
+               
+                document.getElementById('saleresult').textContent = data.message;
+            }catch (error) {
+                console.error('Error:', error);}
+        });
+
+
+
+
+
 
         </script>
     </center>
